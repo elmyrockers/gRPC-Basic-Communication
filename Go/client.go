@@ -4,25 +4,33 @@ import (
 	"context"
 	"fmt"
 	"log"
+	// "github.com/davecgh/go-spew/spew"
 
 	"google.golang.org/grpc"
 	"gRPC-Basic-Communication/pb"
 )
 
 func main() {
-	insecureOption := grpc.WithInsecure()
-	connection, err := grpc.Dial("localhost:50055", insecureOption )
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer connection.Close()
+	// Connect to gRPC server
+		insecureOption := grpc.WithInsecure() // No SSL/TLS - Only for local development
+		connection, err := grpc.Dial("localhost:50055", insecureOption )
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer connection.Close()
 
-	client := pb.NewUserServiceClient( connection )
-	request := &pb.DataRequest{Id: "30"}
+	// Send request
+		request := &pb.DataRequest{Id: "30"}
+		client := pb.NewUserServiceClient( connection )
+		response, err := client.GetUser(context.Background(), request)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	response, err := client.GetUser(context.Background(), request)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Receive response => %s ", response.Name)
+	// Display response
+		fmt.Printf("Receive response => \nID:%s\nName:%s\nEmail:%s\nAge:%d",
+							response.Id,
+							response.Name,
+							*response.Email,
+							response.GetAge() )
 }
