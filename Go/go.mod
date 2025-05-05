@@ -3,6 +3,7 @@ module gRPC-Basic-Communication
 go 1.24.0
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
