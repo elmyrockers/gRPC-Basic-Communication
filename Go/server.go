@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"github.com/davecgh/go-spew/spew"
 
 	"google.golang.org/grpc"
 	"gRPC-Basic-Communication/pb"
@@ -15,29 +16,37 @@ type UserService struct {
 }
 
 func (s *UserService) GetUser(ctx context.Context, request *pb.DataRequest) (*pb.DataResponse, error) {
-    age := int32(25)
-    email := "helmi@xeno.com.my"
+	// Debugging Request
+		spew.Dump( request )
 
-    return &pb.DataResponse{
-        Id:    request.Id,
-        Name:  "Helmi Aziz",
-        Age:   &age,
-        Email: &email,
-    }, nil
+
+	// Response
+	    age := int32(25)
+	    email := "helmi@xeno.com.my"
+
+	    return &pb.DataResponse{
+	        Id:    request.Id,
+	        Name:  "Helmi Aziz",
+	        Age:   &age,
+	        Email: &email,
+	    }, nil
 }
 
 func main() {
-	listener, err := net.Listen("tcp", ":50055")
-	if err != nil {
-		panic(err)
-	}
+	// Register the service
+		grpcServer := grpc.NewServer()
+		pb.RegisterUserServiceServer( grpcServer, &UserService{}) 
 
-	grpcServer := grpc.NewServer()
-	pb.RegisterUserServiceServer( grpcServer, &UserService{})
-	fmt.Println( "gRPC Server running on port 50055" )
+	// Start gRPC server
+		// Listening on TCP port 50055
+			listener, err := net.Listen("tcp", ":50055")
+			if err != nil {
+				panic(err)
+			}
 
-	if err := grpcServer.Serve( listener ); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
-	
+		// Start serving requests
+			fmt.Println( "Starting gRPC server on port 50055..." )
+			if err := grpcServer.Serve( listener ); err != nil {
+				log.Fatalf("failed to serve: %v", err)
+			}
 }
