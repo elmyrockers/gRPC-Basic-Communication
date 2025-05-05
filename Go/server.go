@@ -35,10 +35,10 @@ func (s *UserService) GetUser(ctx context.Context, request *pb.DataRequest) (*pb
 func main() {
 	// Register the service
 		grpcServer := grpc.NewServer()
-		pb.RegisterUserServiceServer( grpcServer, &UserService{}) 
+		pb.RegisterUserServiceServer( grpcServer, &UserService{})
 
 	// Start gRPC server
-		// Listening on TCP port 50055
+		// Listen on TCP port 50055
 			listener, err := net.Listen("tcp", ":50055")
 			if err != nil {
 				panic(err)
